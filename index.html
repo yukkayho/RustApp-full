@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Classic mode = original rustapp.io design (see rc-classic.css).
+       true  -> the SPA's own look, no custom RustCheck skin layers.
+       false -> the old custom RustCheck screens (rc-home / rc-dash / rc-app-bg). -->
+  <script>window.__RC_CLASSIC__ = true;</script>
+  <script id="checkapp-starttime-fix">
+    (function () {
+      if (window.__checkappStartTimeFix) return;
+      window.__checkappStartTimeFix = 1;
+      function isStartTime(msg) {
+        return /reading ['\"]startTime['\"]|reportAllChanges/i.test(String(msg || ""));
+      }
+      function filterEntries(arr) {
+        var out = [];
+        try {
+          arr = arr || [];
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i] && typeof arr[i].startTime === "number") out.push(arr[i]);
+          }
+        } catch (e) {}
+        return out;
+      }
+      try {
+        var ce = console.error.bind(console);
+        console.error = function () {
+          try {
+            for (var i = 0; i < arguments.length; i++) {
+              var a = arguments[i];
+              if (isStartTime(a) || (a && isStartTime(a.message || a.stack))) return;
+            }
+          } catch (e) {}
+          return ce.apply(console, arguments);
+        };
+      } catch (e) {}
+      window.addEventListener("error", function (ev) {
+        if (!isStartTime((ev && ev.message) || (ev && ev.error && ev.error.message))) return;
+        try { ev.preventDefault(); ev.stopImmediatePropagation(); } catch (e) {}
+      }, true);
+      window.addEventListener("unhandledrejection", function (ev) {
+        var r = ev && ev.reason;
+        if (!isStartTime((r && r.message) || r)) return;
+        try { ev.preventDefault(); } catch (e) {}
+      }, true);
+      function wrapGetter(proto, name) {
+        if (!proto || !proto[name] || proto[name].__checkappPatched) return;
+        var orig = proto[name];
+        function wrapped() {
+          return filterEntries(orig.apply(this, arguments));
+        }
+        wrapped.__checkappPatched = true;
+        try { proto[name] = wrapped; } catch (e) {}
+      }
+      try {
+        wrapGetter(window.PerformanceObserverEntryList && PerformanceObserverEntryList.prototype, "getEntries");
+        wrapGetter(window.PerformanceObserverEntryList && PerformanceObserverEntryList.prototype, "getEntriesByType");
+        wrapGetter(window.PerformanceObserverEntryList && PerformanceObserverEntryList.prototype, "getEntriesByName");
+        wrapGetter(window.Performance.prototype, "getEntries");
+        wrapGetter(window.Performance.prototype, "getEntriesByType");
+        wrapGetter(window.Performance.prototype, "getEntriesByName");
+      } catch (e) {}
+      try {
+        var pop = PerformanceObserver.prototype;
+        if (pop.takeRecords && !pop.takeRecords.__checkappPatched) {
+          var tr = pop.takeRecords;
+          pop.takeRecords = function () { return filterEntries(tr.call(this)); };
+          pop.takeRecords.__checkappPatched = true;
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script id="checkapp-landing-s3-fix">
+    (function () {
+      if (window.__checkappLandingS3Fix) return;
+      window.__checkappLandingS3Fix = 1;
+      var FILES = {
+        "landing-mt-bg-2.png": 1,
+        "landing_stats_01.webp": 1,
+        "landing_stats_02.webp": 1,
+        "landing_stats_03.webp": 1,
+        "landing_stats_05.webp": 1,
+        "stats-4.jpg": 1
+      };
+      function fileName(u) {
+        return String(u || "").split("?")[0].split("#")[0].split("/").pop();
+      }
+      function fix(u) {
+        u = String(u || "");
+        var name = fileName(u);
+        if (FILES[name]) return location.origin + "/local/landing/" + name;
+        return u;
+      }
+      function needsFix(u) {
+        u = String(u || "");
+        return !!(FILES[fileName(u)] && /(?:s3|r2)\.|rustapp\.io/i.test(u));
+      }
+      function fixCss(css) {
+        return String(css || "").replace(/url\(\s*(['"]?)(.*?)\1\s*\)/g, function (_, q, u) {
+          return "url(" + q + (needsFix(u) ? fix(u) : u) + q + ")";
+        });
+      }
+      var origReplace = String.prototype.replace;
+      String.prototype.replace = function (search, replacer) {
+        var out = origReplace.apply(this, arguments);
+        if (typeof out === "string" && needsFix(out)) return fix(out);
+        return out;
+      };
+      function wrapStyle(prop) {
+        try {
+          var proto = CSSStyleDeclaration.prototype;
+          var desc = Object.getOwnPropertyDescriptor(proto, prop);
+          if (!desc || !desc.set) return;
+          Object.defineProperty(proto, prop, {
+            configurable: true,
+            enumerable: desc.enumerable,
+            get: desc.get,
+            set: function (v) { desc.set.call(this, fixCss(String(v || ""))); }
+          });
+        } catch (_) {}
+      }
+      wrapStyle("backgroundImage");
+      wrapStyle("background");
+      wrapStyle("cssText");
+      try {
+        var proto = CSSStyleDeclaration.prototype;
+        var setProp = proto.setProperty;
+        proto.setProperty = function (name, value, priority) {
+          if (value) value = fixCss(String(value));
+          return setProp.call(this, name, value, priority);
+        };
+      } catch (_) {}
+    })();
+  </script>
+  <style id="checkapp-hide-map-early">
+    .navigation .search,
+    .navigation .search-full,
+    .navigation .search-small,
+    .navigation .navigation-state-btn,
+    .navigation .header .search,
+    .fake-wrapper,
+    .fake-modal,
+    .vfm:has(.fake-modal),
+    .vfm:has(.fake-wrapper),
+    [data-checkapp-hide-sidebar-search="1"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      width: 0 !important;
+      min-height: 0 !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+    }
+  </style>
+  <script>
+    (function () {
+      if (window.__RC_CLASSIC__) return;
+      var p = location.pathname || "/";
+      if (p === "/admin" || p === "/admin/") {
+        location.replace("/admin.html" + location.search + location.hash);
+      }
+    })();
+  </script>
+  <title>RustApp</title>
+  <link rel="icon" href="/local/image-1024.jpg?v=6" type="image/jpeg">
+  <link rel="apple-touch-icon" href="/local/image-1024.jpg?v=6">
+  <meta name="google" content="notranslate">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-orientations" content="portrait">
+  <meta name="apple-mobile-web-app-title" content="RustApp">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=contain">
+  <meta name="theme-color" content="#1E1E1E">
+  <script>
+    (function () {
+      /* classic mode: the original rustapp.io design never enables the
+         rc-home / rc-dash / rc-panel-home / rc-app-bg replacement layers */
+      if (window.__RC_CLASSIC__) return;
+      var p = location.pathname || "/";
+      if (p === "/" || p.replace(/\/+$/, "") === "" || p === "/index.html" || /^\/client\/auth/.test(p)) {
+        document.documentElement.classList.add("checkapp-home", "rc-home-on");
+      }
+      if (p !== "/" && p !== "/index.html" && !/^\/client\/auth/.test(p)) {
+        document.documentElement.classList.add("rc-app-bg");
+      }
+      if (/^\/[^/]+\/home(?:\/|$)/i.test(p)) {
+        document.documentElement.classList.add("rc-panel-home-on");
+      }
+      if (/^\/client\/profile/.test(p) || p === "/profile") {
+        document.documentElement.classList.add("rc-profile-on", "rc-dash-on");
+      }
+    })();
+  </script>
+  <style id="checkapp-landing-antiflash">
+    html.checkapp-home,
+    html.checkapp-home body,
+    html.rc-home-on,
+    html.rc-home-on body {
+      background: #050505 !important;
+    }
+    html.rc-profile-on,
+    html.rc-profile-on body,
+    html.rc-dash-on,
+    html.rc-dash-on body {
+      background: #050505 !important;
+    }
+    html.rc-dash-on #app {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home #app,
+    html.rc-home-on #app,
+    html.checkapp-home .landing-page {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home img[src*="players.webp"],
+    html.checkapp-home img[src*="chat.webp"],
+    html.checkapp-home img[src*="check.webp"],
+    html.checkapp-home img[src*="drawings.webp"],
+    html.checkapp-home img[src*="bans.webp"],
+    html.checkapp-home img[src*="stats-players.webp"],
+    html.checkapp-home [style*="landing-mt-bg"],
+    html.checkapp-home [style*="landing-mt-bg-2"],
+    html.checkapp-home [data-checkapp-hide-demo-tabs="1"],
+    html.checkapp-home [data-checkapp-hide-demo-shot="1"],
+    html.checkapp-home [data-checkapp-hide-online="1"],
+    html.checkapp-home [data-checkapp-hide-feature-tab="1"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      max-height: 0 !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home .landing-page main > section:first-of-type canvas,
+    html.checkapp-home .landing-page main > section:first-of-type video,
+    html.checkapp-home .landing-page main > section:first-of-type [data-checkapp-hide-hero-art="1"] {
+      display: none !important;
+      visibility: hidden !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home #checkapp-hero-logo {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      margin: 0 auto 16px !important;
+      width: 112px !important;
+      height: 112px !important;
+      border-radius: 16px !important;
+      object-fit: cover !important;
+    }
+    html.checkapp-home .landing-page main > section:has([style*="landing-mt-bg"]):not(:has(.stats-card)),
+    html.checkapp-home .landing-page main > section:has([style*="landing-mt-bg-2"]):not(:has(.stats-card)),
+    html.checkapp-home .landing-page main > section:has(img[src*="players.webp"]):not(:has(.stats-card)),
+    html.checkapp-home .landing-page main > section:has(img[src*="chat.webp"]):not(:has(.stats-card)) {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+    }
+    html.checkapp-home:not(.checkapp-home-ready) .landing-page {
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home:not(.checkapp-home-ready) .landing-page > header,
+    html.checkapp-home:not(.checkapp-home-ready) .landing-page main > section,
+    html.checkapp-home:not(.checkapp-home-ready) .landing-page footer {
+      opacity: 0 !important;
+      transform: translate3d(0, 20px, 0);
+    }
+    html.checkapp-home.checkapp-home-ready .landing-page {
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+    html.checkapp-home .landing-page main > section:has(.scroll-container):not([data-checkapp-hide-trust="1"]),
+    html.checkapp-home #checkapp-projects-ribbon {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      height: auto !important;
+      min-height: 56px !important;
+      overflow: hidden !important;
+      padding: 18px 0 24px !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home .landing-page .scroll-container {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    html.checkapp-home .landing-page main > section[data-checkapp-hide-trust="1"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page > header,
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]),
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page footer {
+      opacity: 1 !important;
+      transform: translate3d(0, 0, 0) !important;
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(1):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    html.checkapp-home .landing-page main > section:first-of-type p.text-grey-400,
+    html.checkapp-home .landing-page main > section:first-of-type p[data-checkapp-hero-subtitle="1"] {
+      color: #eaeaea !important;
+      -webkit-text-fill-color: #eaeaea !important;
+      opacity: 1 !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page > header { transition-delay: 0.05s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(2):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) { transition-delay: 0.20s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(3):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) { transition-delay: 0.28s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(4):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) { transition-delay: 0.36s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(5):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) { transition-delay: 0.44s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:nth-of-type(6):not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]) { transition-delay: 0.52s; }
+    html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page footer { transition-delay: 0.58s; }
+    html.checkapp-home.checkapp-home-ready .landing-page .stats-card {
+      transition-property: all !important;
+      transition-duration: 0.3s !important;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+      transition-delay: 0s !important;
+    }
+    html.checkapp-home-stable.checkapp-home .landing-page > header,
+    html.checkapp-home-stable.checkapp-home .landing-page main > section:not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]):not([data-checkapp-hide-feed="1"]):not(:has(.stats-card)):not(:has(.scroll-container)),
+    html.checkapp-home-stable.checkapp-home .landing-page footer {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation: none !important;
+    }
+    html.checkapp-home,
+    html.checkapp-home body {
+      background: #050505 !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page > header,
+      html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section:not([data-checkapp-hide="1"]):not([data-checkapp-hide-trust="1"]),
+      html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page footer {
+        transition-duration: 0.35s;
+        transition-delay: 0s !important;
+        transform: none !important;
+      }
+      html.checkapp-home:not(.checkapp-home-ready) .landing-page > header,
+      html.checkapp-home:not(.checkapp-home-ready) .landing-page main > section,
+      html.checkapp-home:not(.checkapp-home-ready) .landing-page footer {
+        transform: none;
+      }
+    }
+  </style>
+  <meta name="description" content="RustApp is a powerful moderation tool for RUST servers, featuring bans, mutes, reports, stats, Steam data - and much more.">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=block" crossorigin="anonymous">
+  <script>
+    /* FIRST: force all Checkapp/RustApp API hosts onto this local origin */
+    (function () {
+      function toLocal(raw) {
+        var href = String(raw || "");
+        if (!href || href.charAt(0) === "/" || href.indexOf("data:") === 0 || href.indexOf("blob:") === 0) return href;
+        /* String-level authority check FIRST: new URL() itself THROWS for
+           hosts like core.2.27.248.113 (a trailing numeric label makes the
+           WHATWG parser attempt IPv4 parsing and fail). The catch below used
+           to swallow that, the fallback regex knew nothing about core./court.
+           and the browser then rejected xhr.open() with "Invalid URL" — which
+           broke sign-in / sign-up whenever the site was opened by bare IP. */
+        var hm = /^(https?:)\/\/([^\/?#]+)/i.exec(href);
+        if (hm) {
+          var hst = hm[2].replace(/:\d+$/, "").toLowerCase();
+          if (hst !== location.hostname && hst !== "127.0.0.1" && hst !== "localhost" &&
+              /checkapp|rustapp|centrifugo|s3\.|r2\.|^core\.|^court\./i.test(hst)) {
+            return location.origin + href.slice(hm[0].length);
+          }
+          return href;
+        }
+        try {
+          var u = new URL(href, location.origin);
+          var host = String(u.hostname || "").toLowerCase();
+          if (host === location.hostname || host === "127.0.0.1" || host === "localhost") return href;
+          if (/checkapp|rustapp|centrifugo|s3\.|r2\./i.test(host) || host.indexOf("core.") === 0 || host.indexOf("court.") === 0) {
+            return location.origin + u.pathname + u.search + u.hash;
+          }
+        } catch (_) {}
+        if (/^https?:\/\/[^/]*(checkapp|rustapp|centrifugo)/i.test(href)) {
+          return location.origin + href.replace(/^https?:\/\/[^/]+/i, "");
+        }
+        return href;
+      }
+      function okJson() {
+        return new Response("{}", { status: 200, headers: { "Content-Type": "application/json" } });
+      }
+      var ofetch = window.fetch.bind(window);
+      window.fetch = function (input, init) {
+        var url = typeof input === "string" ? input : (input && input.url);
+        var next = toLocal(url);
+        var req = (typeof input === "string" || next !== url) ? ofetch(next, init) : ofetch(input, init);
+        return req.catch(function () { return okJson(); });
+      };
+      var oopen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (method, url) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        return oopen.apply(this, [method, toLocal(url)].concat(args));
+      };
+      var OWS = window.WebSocket;
+      window.__checkappCentrifugeSockets = window.__checkappCentrifugeSockets || [];
+      window.WebSocket = function (url, protocols) {
+        var href = String(url || "");
+        if (/checkapp|rustapp|centrifugo|connection\/websocket/i.test(href) ||
+            ((href.indexOf("ws://") === 0 || href.indexOf("wss://") === 0) && href.indexOf(location.host) < 0)) {
+          var listeners = { open: [], message: [], close: [], error: [] };
+          var handlers = { open: null, message: null, error: null, close: null };
+          var subs = {};
+          function emit(type, ev) {
+            var fn = handlers[type];
+            if (typeof fn === "function") { try { fn(ev); } catch (_) {} }
+            (listeners[type] || []).forEach(function (cb) { try { cb(ev); } catch (_) {} });
+          }
+          var fake = {
+            url: href, readyState: 0, bufferedAmount: 0, extensions: "", protocol: "json", binaryType: "blob", __subs: subs,
+            addEventListener: function (type, fn) {
+              if (!listeners[type]) listeners[type] = [];
+              listeners[type].push(fn);
+              if (type === "open" && fake.readyState === 1) { try { fn({}); } catch (_) {} }
+            },
+            removeEventListener: function (type, fn) {
+              if (!listeners[type]) return;
+              listeners[type] = listeners[type].filter(function (x) { return x !== fn; });
+            },
+            dispatchEvent: function () { return true; },
+            send: function (raw) {
+              var text = String(raw || "");
+              var rows = text.indexOf("\n") >= 0 ? text.split("\n") : [text];
+              rows.forEach(function (row) {
+                if (!row) return;
+                var msg;
+                try { msg = JSON.parse(row); } catch (_) { return; }
+                var id = msg && msg.id;
+                var reply = null;
+                if (msg && msg.connect) {
+                  reply = { id: id, connect: { client: "local-1", version: "5.2.2", ping: 0, pong: true, expires: false, session: "local", node: "local", data: { user: "1", id: 1 } } };
+                } else if (msg && msg.subscribe) {
+                  var channel = msg.subscribe.channel;
+                  if (channel) subs[channel] = 1;
+                  reply = { id: id, subscribe: { recoverable: false, positioned: false, epoch: "0", offset: 0 } };
+                } else if (msg && msg.unsubscribe) {
+                  reply = { id: id, unsubscribe: {} };
+                } else if (msg && msg.ping) {
+                  reply = { id: id, ping: {} };
+                } else if (msg && msg.presence) {
+                  reply = { id: id, presence: { presence: { "local-1": { user: "1", client: "local-1" } } } };
+                } else if (msg && msg.presence_stats) {
+                  reply = { id: id, presence_stats: { num_clients: 1, num_users: 1 } };
+                } else if (msg && msg.history) {
+                  reply = { id: id, history: { publications: [], offset: 0, epoch: "0" } };
+                } else if (id != null) {
+                  reply = { id: id };
+                }
+                if (reply) emit("message", { data: JSON.stringify(reply) });
+              });
+            },
+            close: function (code, reason) {
+              if (fake.readyState === 3) return;
+              fake.readyState = 3;
+              emit("close", { code: code || 1000, reason: reason || "", wasClean: true });
+            },
+            __emit: emit
+          };
+          window.__checkappCentrifugeSockets.push(fake);
+          fake.__opened = false;
+          function openNow() {
+            if (fake.__opened) return;
+            fake.__opened = true;
+            fake.readyState = 1;
+            emit("open", {});
+          }
+          fake.readyState = 1;
+          setTimeout(openNow, 0);
+          Object.defineProperty(fake, "onopen", { get: function () { return handlers.open; }, set: function (fn) { handlers.open = fn; if (fake.readyState === 1 && fn) openNow(); } });
+          Object.defineProperty(fake, "onmessage", { get: function () { return handlers.message; }, set: function (fn) { handlers.message = fn; } });
+          Object.defineProperty(fake, "onerror", { get: function () { return handlers.error; }, set: function (fn) { handlers.error = fn; } });
+          Object.defineProperty(fake, "onclose", { get: function () { return handlers.close; }, set: function (fn) { handlers.close = fn; } });
+          return fake;
+        }
+        return protocols !== undefined ? new OWS(url, protocols) : new OWS(url);
+      };
+      window.WebSocket.CONNECTING = 0;
+      window.WebSocket.OPEN = 1;
+      window.WebSocket.CLOSING = 2;
+      window.WebSocket.CLOSED = 3;
+    })();
+  </script>
+  <style id="checkapp-force-css">
+    footer a[href*="github"], footer a[href*="x.com"], footer a[href*="twitter.com"],
+    .socials a[href*="github"], .socials a[href*="x.com"], .socials a[href*="twitter.com"],
+    a[href*="docs.rustapp"], a[href*="github.com/rust"],
+    [data-checkapp-hide="1"] {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      opacity: 0 !important;
+    }
+  </style>
+  <script>
+    (function () {
+      function hide(el) {
+        if (!el || el.nodeType !== 1) return;
+        try {
+          el.setAttribute("data-checkapp-hide", "1");
+          el.style.setProperty("display", "none", "important");
+          el.style.setProperty("visibility", "hidden", "important");
+          el.style.setProperty("pointer-events", "none", "important");
+        } catch (_) {}
+      }
+      function norm(s) { return String(s || "").replace(/\s+/g, " ").trim(); }
+      function isHome() {
+        var p = location.pathname || "/";
+        return p === "/" || p.replace(/\/+$/, "") === "";
+      }
+      function hideLandingDemo() {
+        if (window.__RC_CLASSIC__) return;
+        if (!isHome()) return;
+        if (window.__checkappLandingDemoHidden) return;
+        var featureRe = /^(игроки|players|чат|chat|проверки|checks|inspections|рисунки|signages|drawings|баны|bans|статистика|statistics)$/i;
+        var demoImgRe = /players\.webp|chat\.webp|check\.webp|drawings\.webp|bans\.webp|stats-players\.webp/i;
+        document.querySelectorAll("img").forEach(function (img) {
+          var src = String(img.getAttribute("src") || img.currentSrc || "");
+          if (!demoImgRe.test(src)) return;
+          hide(img);
+          var sec = img.closest("section");
+          if (sec && !sec.querySelector(".stats-card, .stats-bg")) hide(sec);
+        });
+        document.querySelectorAll("[style*='landing-mt-bg'], [style*='landing-mt-bg-2']").forEach(function (el) {
+          var sec = el.closest("section");
+          if (sec && !sec.querySelector(".stats-card, .stats-bg")) hide(sec);
+          else hide(el);
+        });
+        document.querySelectorAll("button, [role='tab'], div[class*='cursor-pointer']").forEach(function (el) {
+          if (el.closest(".stats-card, .stats-bg")) return;
+          if (featureRe.test(norm(el.textContent))) hide(el);
+        });
+        document.querySelectorAll(".landing-page main > section, main > section").forEach(function (section) {
+          if (section.querySelector(".stats-card, .stats-bg")) return;
+          var hasDemo = section.querySelector("[style*='landing-mt-bg'], [style*='landing-mt-bg-2']") ||
+            section.querySelector("img[src*='players.webp'], img[src*='chat.webp'], img[src*='check.webp']");
+          if (hasDemo) hide(section);
+        });
+        window.__checkappLandingDemoHidden = true;
+      }
+      function finishLandingReveal() {
+        if (window.__checkappLandingRevealFallback) {
+          clearTimeout(window.__checkappLandingRevealFallback);
+          window.__checkappLandingRevealFallback = null;
+        }
+        document.documentElement.classList.add("checkapp-home-ready");
+        if (window.__checkappLandingRevealDoneTimer) clearTimeout(window.__checkappLandingRevealDoneTimer);
+        window.__checkappLandingRevealDoneTimer = setTimeout(function () {
+          document.documentElement.classList.add("checkapp-home-revealed");
+          if (typeof window.__checkappLockLandingHomeStable === "function") {
+            try { window.__checkappLockLandingHomeStable(); } catch (_) {}
+          } else {
+            document.documentElement.classList.add("checkapp-home-stable");
+          }
+        }, 850);
+      }
+      function revealLandingHome() {
+        if (!isHome()) return;
+        if (document.documentElement.classList.contains("checkapp-home-ready")) return;
+        if (window.__checkappLandingRevealTimer) return;
+        var landing = document.querySelector(".landing-page");
+        if (!landing) return;
+        var main = landing.querySelector("main");
+        if (!main || !main.querySelector("section, h1")) return;
+        hideLandingDemo();
+        window.__checkappLandingRevealTimer = setTimeout(function () {
+          window.__checkappLandingRevealTimer = null;
+          hideLandingDemo();
+          requestAnimationFrame(function () {
+            requestAnimationFrame(finishLandingReveal);
+          });
+        }, 80);
+      }
+      function force() {
+        if (window.__checkappLandingStable) return;
+        if (!window.__checkappLandingDemoHidden) hideLandingDemo();
+        revealLandingHome();
+        if (!isHome()) return;
+        document.querySelectorAll(".landing-page main section:first-of-type p").forEach(function (p) {
+          var t = String(p.textContent || "").replace(/\s+/g, " ").trim();
+          if (/простой и надежный|simple and honest|простий і надійний/i.test(t)) {
+            p.setAttribute("data-checkapp-hero-subtitle", "1");
+            p.style.setProperty("color", "#eaeaea", "important");
+            p.style.setProperty("opacity", "1", "important");
+            p.style.setProperty("transition", "none", "important");
+          }
+        });
+        if (document.title && /Checkapp/i.test(document.title)) {
+          document.title = document.title.replace(/Checkapp/gi, "RustApp");
+        }
+        if (!window.__RC_CLASSIC__ && !document.getElementById("checkapp-hero-logo")) {
+          document.querySelectorAll(".landing-page main section:first-of-type canvas, .landing-page main section:first-of-type video").forEach(function (el) {
+            el.style.setProperty("display", "none", "important");
+            el.style.setProperty("visibility", "hidden", "important");
+            el.style.setProperty("width", "0", "important");
+            el.style.setProperty("height", "0", "important");
+            el.style.setProperty("opacity", "0", "important");
+          });
+          var heroSection = document.querySelector(".landing-page main section:first-of-type");
+          if (heroSection) {
+            var heroImg = document.createElement("img");
+            heroImg.id = "checkapp-hero-logo";
+            heroImg.src = "/local/image-1024.jpg?v=6";
+            heroImg.alt = "RustApp";
+            heroImg.width = 112;
+            heroImg.height = 112;
+            heroImg.style.cssText = "display:block!important;margin:0 auto 16px!important;width:112px!important;height:112px!important;border-radius:16px!important;object-fit:cover!important;";
+            var anchor = heroSection.querySelector("h1") || heroSection.firstElementChild;
+            if (anchor && anchor.parentElement) anchor.parentElement.insertBefore(heroImg, anchor);
+            else heroSection.insertBefore(heroImg, heroSection.firstChild);
+          }
+        }
+        document.querySelectorAll(".landing-page header img, .landing-page header a[href='/'] img").forEach(function (img) {
+          if (img.id === "checkapp-hero-logo") return;
+          var src = String(img.getAttribute("src") || img.currentSrc || "");
+          if (/logo-mark|rustlogo|logo-avatar|1780921773745|checkapp|rustapp/i.test(src) && src.indexOf("/local/image-1024.jpg") < 0) {
+            img.src = "/local/image-1024.jpg?v=6";
+            img.alt = "RustApp";
+          }
+        });
+        if (window.__checkappLandingForceBrandingDone) return;
+        window.__checkappLandingForceBrandingDone = true;
+        document.querySelectorAll(".landing-page h1, .landing-page header, .landing-page footer, .landing-page main").forEach(function (root) {
+          try {
+            var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+            var n;
+            while ((n = tw.nextNode())) {
+              if (/Checkapp/i.test(n.textContent || "")) {
+                n.textContent = String(n.textContent || "").replace(/Checkapp/gi, "RustApp");
+              }
+            }
+          } catch (_) {}
+        });
+        document.querySelectorAll("a, button").forEach(function (el) {
+          var href = (el.getAttribute("href") || "").toLowerCase();
+          var t = norm(el.textContent).toLowerCase();
+          if (href.indexOf("docs.rustapp") >= 0 || t === "документация" || t === "documentation" || t === "docs") hide(el);
+        });
+        document.querySelectorAll("footer a, .socials a").forEach(function (a) {
+          var href = (a.getAttribute("href") || "").toLowerCase();
+          var label = norm(a.getAttribute("aria-label") || a.getAttribute("title") || a.textContent).toLowerCase();
+          if (href.indexOf("github") >= 0 || href.indexOf("x.com") >= 0 || href.indexOf("twitter") >= 0 || label.indexOf("github") >= 0 || label === "x" || label === "twitter") {
+            hide(a);
+            try { a.remove(); } catch (_) {}
+            return;
+          }
+          if (/t\.me\/rustapp/i.test(href) || /telegram\.me\/rustapp/i.test(href)) {
+            a.setAttribute("href", "https://t.me/RustCheckcc");
+          }
+          if (href.indexOf("discord") >= 0) {
+            a.setAttribute("href", "https://discord.gg/w2n9RarMpB");
+            a.setAttribute("data-checkapp-discord", "1");
+          }
+        });
+        var footer = document.querySelector(".landing-page footer") || document.querySelector("footer");
+        if (footer) {
+          var socials = footer.querySelector(".socials") || footer.querySelector("[class*='social']") || footer;
+          socials.querySelectorAll('a[href*="discord"], a[data-checkapp-discord]').forEach(function (a) {
+            a.setAttribute("href", "https://discord.gg/w2n9RarMpB");
+            a.setAttribute("data-checkapp-discord", "1");
+          });
+          var hasTg = !!socials.querySelector('a[href*="t.me"], a[href*="telegram"]');
+          var hasDs = !!socials.querySelector('a[href*="discord"], a[data-checkapp-discord]');
+          if (hasTg) {
+            socials.querySelectorAll('a[href*="t.me"], a[href*="telegram"]').forEach(function (a) {
+              a.setAttribute("href", "https://t.me/RustCheckcc");
+              a.setAttribute("data-checkapp-telegram", "1");
+            });
+          } else {
+            var tg = document.createElement("a");
+            tg.href = "https://t.me/RustCheckcc";
+            tg.target = "_blank";
+            tg.rel = "noreferrer noopener";
+            tg.setAttribute("data-checkapp-telegram", "1");
+            tg.setAttribute("aria-label", "Telegram");
+            tg.title = "Telegram";
+            tg.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>';
+            socials.appendChild(tg);
+          }
+          if (!hasDs) {
+            var ds = document.createElement("a");
+            ds.href = "https://discord.gg/w2n9RarMpB";
+            ds.target = "_blank";
+            ds.rel = "noreferrer noopener";
+            ds.setAttribute("data-checkapp-discord", "1");
+            ds.setAttribute("aria-label", "Discord");
+            ds.title = "Discord";
+            ds.style.cssText = "display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:#5865f2;color:#fff;";
+            ds.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9944a.076.076 0 00-.0416-.1057c-.6528-.2476-1.274-.5495-1.872-.8914a.077.077 0 01-.0076-.1287c.1258-.0943.2517-.1925.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.0989.246.1981.3728.2924a.077.077 0 01-.0066.1276 14.0415 14.0415 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286z"/></svg>';
+            socials.appendChild(ds);
+          }
+        }
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", force);
+      else force();
+      function watchApp() {
+        var appRoot = document.getElementById("app");
+        if (!appRoot || typeof MutationObserver === "undefined") return;
+        var moTimer = null;
+        new MutationObserver(function () {
+          if (window.__checkappLandingStable) return;
+          if (moTimer) return;
+          moTimer = setTimeout(function () {
+            moTimer = null;
+            if (window.__checkappLandingStable) return;
+            if (!window.__checkappLandingDemoHidden) hideLandingDemo();
+            revealLandingHome();
+            if (!document.documentElement.classList.contains("checkapp-home-revealed")) force();
+          }, 120);
+        }).observe(appRoot, { childList: true, subtree: true });
+      }
+      if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", watchApp);
+      else watchApp();
+    })();
+  </script>
+  <script>
+    try {
+      ["setItem", "getItem", "removeItem", "clear", "key", "length"].forEach(function (k) {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
+      localStorage.removeItem("checkapp_fix");
+    } catch (_) {}
+  </script>
+  <script>
+    (function () {
+      function brand() {
+        try {
+          if (/checkapp/i.test(document.title || "")) {
+            document.title = String(document.title).replace(/Checkapp/gi, "RustApp");
+          }
+          var nodes = document.querySelectorAll("a, span, p, h1, h2, h3, button, strong");
+          for (var i = 0; i < nodes.length; i++) {
+            var el = nodes[i];
+            if (el.children && el.children.length) continue;
+            var t = String(el.textContent || "");
+            if (t.length && t.length < 32 && /checkapp/i.test(t)) {
+              el.textContent = t.replace(/Checkapp/gi, "RustApp").replace(/CHECKAPP/g, "RUSTAPP");
+            }
+          }
+        } catch (e) {}
+      }
+      setInterval(brand, 250);
+    })();
+  </script>
+  <script src="/mock-local.js?v=391"></script>
+  <script>
+    (function () {
+      function goPay(u) {
+        u = String(u || "").replace(/^["']|["']$/g, "").trim();
+        if (!/^https?:\/\//i.test(u)) return false;
+        try { window.top.location.href = u; } catch (e1) {}
+        try { window.location.replace(u); } catch (e2) {}
+        try { window.location.href = u; } catch (e3) {}
+        return true;
+      }
+      window.__caGoPay = goPay;
+      function tap(fn) {
+        if (typeof fn !== "function") return fn;
+        return function (input, init) {
+          var url = typeof input === "string" ? input : (input && input.url) || "";
+          var p = fn.apply(this, arguments);
+          if (!p || typeof p.then !== "function") return p;
+          if (!/platega\/create|wallet-topup/i.test(String(url || ""))) return p;
+          return p.then(function (res) {
+            try {
+              var copy = res.clone();
+              copy.text().then(function (raw) {
+                var data = raw;
+                try { data = JSON.parse(raw); } catch (e) {}
+                if (typeof data === "string") goPay(data);
+                else if (data) goPay(data.redirect || data.url || data.paymentLink);
+              });
+            } catch (e) {}
+            return res;
+          });
+        };
+      }
+      if (window.__checkappOrigFetch) window.__checkappOrigFetch = tap(window.__checkappOrigFetch);
+      if (window.fetch) window.fetch = tap(window.fetch);
+    })();
+  </script>
+  <script type="module" src="/assets/index-map-avatars.js?v=1"></script>
+  <link rel="stylesheet" crossorigin="" href="/assets/index-DXG26Pd9.css">
+  <!-- Load the existing final styles before the first paint. Keep the same IDs
+       and versions as the JS loaders so they reuse these stylesheet nodes. -->
+  <script>
+    if (window.__RC_CLASSIC__) {
+      /* original rustapp.io design - last stylesheet so it wins the cascade */
+      document.write('<link id="rc-classic-css" rel="stylesheet" href="/rc-classic.css?v=1">');
+    } else {
+      document.write('<link id="rc-panel-home-css" rel="stylesheet" href="/rc-panel-home.css?v=11">');
+      document.write('<link id="rc-ui-polish-css" rel="stylesheet" href="/rc-ui-polish.css?v=11">');
+      document.write('<link id="rc-app-bg-css" rel="stylesheet" href="/rc-app-bg.css?v=13">');
+      /* These styles belong to the replacement landing/profile screens only. */
+      if (document.documentElement.classList.contains("rc-home-on")) {
+        document.write('<link id="rc-home-css" rel="stylesheet" href="/rc-home.css?v=16">');
+      }
+      if (document.documentElement.classList.contains("rc-dash-on")) {
+        document.write('<link id="rc-dash-css" rel="stylesheet" href="/rc-dash.css?v=15">');
+      }
+      document.write('<link rel="stylesheet" href="/rc-requested.css?v=6">');
+    }
+  </script>
+</head>
+<body version="63b88e9">
+  <div id="app"></div>
+  <script src="/checkapp-gates.js?v=169"></script>
+  <script src="/rc-requested.js?v=8"></script>
+</body>
+</html>

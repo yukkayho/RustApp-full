@@ -1,0 +1,8 @@
+﻿
+==== ready value patterns ====
+
+
+EXT :0,b:{t:2,i:[{t:3}],s:"Please wait, we are analyzing your ban, come back later"}},"ban-sync-confirm-unsubscribe-title":{t:0,b:{t:2,i:[{t:3}],s:"Are you sure?"}},"ban-sync-confirm-unsubscribe-subtitle":{t:0,b:{t:2,i:[{t:3}],s:"Are you sure you want to unsubscribe from the ban list for this project?"}},"ban-sync-page-item-subtext-subs-you":{t:0,b:{t:2,i:[{t:3,v:"you subscribed "},{t:4,k:"time"}]}},"alert-join-with-external-ban-1":{t:0,b:{t:2,i:[{t:3}],s:"Entered"}},"alert-join-with-external-ban-2"
+
+DETECT name 1942387
+DetectRaBan",props:{meta:{},date:{}},setup(s){const{t}=rt(),e=s,{generate:i}=on(),n=X();Ct(async()=>{const r=await It().player.browseFullBatchLoader.load(e.meta.steam_id);if(!r||!("steam_id"in r)){n.value=i(e.meta.steam_id);return}n.value=r});const a=J(()=>e.meta.bans.some(r=>r.auto_kicked));return(r,o)=>(y(),H(Cu,{icon:"player-alert-types/apple.spoiled.png",date:r.date,ready:!!n.value},{default:D(()=>[n.value?(y(),S(Q,{key:0},[a.value?(y(),S(Q,{key:0},[b("span",{class:"bright cursor-pointer",onClick:o[0]||(o[0]=l=>f(us)(n.value.steam_id))},P(n.value.steam_name),1),b("span",null,P(f(t)("alert-

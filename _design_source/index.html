@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>RustApp</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/pwa-512x512.png">
+  <meta name="google" content="notranslate">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-orientations" content="portrait">
+  <meta name="apple-mobile-web-app-title" content="RustApp">
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no,viewport-fit=contain">
+  <meta name="theme-color" content="#1E1E1E">
+  <meta name="description" content="RustApp is a powerful moderation tool for RUST servers, featuring bans, mutes, reports, stats, Steam data — and much more.">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" href="/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=block" as="style" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=block" crossorigin="anonymous">
+
+  <link rel="manifest" href="/manifest.json">
+  <script src="/local-bridge.js?v=7"></script>
+  <script>
+    (function () {
+      var n = 0;
+      setInterval(function () {
+        try {
+          var app = document.querySelector("#app");
+          var vue = app && app.__vue_app__;
+          if (!vue) return;
+          var router = vue.config.globalProperties.$router;
+          if (!router) return;
+          var r = router.currentRoute.value;
+          if (r.matched && r.matched.length) return;
+          if (n++ > 8) return;
+          var dest = location.pathname || "/";
+          if (dest.length > 1 && dest.slice(-1) === "/") dest = dest.slice(0, -1) || "/";
+          if (dest === (r.path || "/")) {
+            router.replace(dest === "/" ? "/pricing" : "/").then(function () { router.replace(dest); });
+          } else {
+            router.replace(dest);
+          }
+        } catch (e) {}
+      }, 150);
+    })();
+  </script>
+  <script type="module" src="/assets/index-Boae7-Pf.js?v=local4"></script>
+  <link rel="modulepreload" crossorigin="" href="/assets/pixi-DlCvDN4U.js">
+  <link rel="stylesheet" crossorigin="" href="/assets/index-C62V7reT.css">
+</head>
+
+<body version="21d258b">
+  <div id="app"></div>
+
+</body>
+
+</html>

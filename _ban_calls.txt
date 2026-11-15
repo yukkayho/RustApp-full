@@ -1,0 +1,77 @@
+items:L}},g=async(E,$)=>{await OD({player:E,team:$??[],callback:async M=>{if(!E)return;const L=M.bans??[];L&&await It().player.ban(E.steam_id,L,M.override_broadcast)},enableCheckStep:!1})},w=E=>r.can(["Court_PlayerEditComment"])?{label:o("add-comment-command"),action:async()=>{(async()=>await ye({type:"warn",title:o("add-note-title"),description:"",prompt:o("add-note-placeholder"),promptStrict:!0,beforeConfirm:async 
+
+====
+
+e({type:"warn",title:t("general.confirm.title"),description:t("ban-copy-disclaimer"),beforeConfirm:async()=>{await It().player.ban(m.steam_id,[{ban_ip_active:m.ban_ip_active,ban_ip:m.ban_ip,proofs:m.proofs.some(w=>w==="x-factor-hidden")?[]:m.proofs,reason:m.reason,steam_id:m.steam_id,comment:g,server_ids:[],expired_at:m.expired_at,destroy_buildings:!1}],void 0),le("success",t("ban-sync-copy-success"))}})};return(m,g)
+
+====
+
+v",fAt,[b("p",mAt,P(u.serverName.replace("<i>","").replace("</i>","")),1),u.active!==!0?(y(),S("span",gAt,P(f(e)("modal.player.bans.ban.unban")),1)):U("",!0)]),b("div",bAt,[b("p",vAt,P(f(i).format(+u.banDate*1e3,"DD.MM.YYYY",!0,!0)),1),yAt,b("p",{class:"truncate",title:u.reason},P(u.reason||f(e)("ban-rcc-no-reason")),9,_At)])],2))),128))])])]),footer:D(()=>[b("div",wAt,[T(Et,{text:f(e)("general.close"),preset:"defaul
+
+====
+
+d(B=>B.is_active&&B.source==="rustapp_local"))==null?void 0:V.ban_dto});t({activeBan:g});const w=J(()=>[{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!
+
+====
+
+l?void 0:V.ban_dto});t({activeBan:g});const w=J(()=>[{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.st
+
+====
+
+al.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!
+
+====
+
+s.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!
+
+====
+
+,inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncat
+
+====
+
+:!0,noTruncate:!0}]),_=J(()=>[{title:a("modal.player.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),x=J(()=>(c.subscription??[]).filter(N=>N.is_public&&N.you_are_publ
+
+====
+
+r.bans-from-other-project"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),x=J(()=>(c.subscription??[]).filter(N=>N.is_public&&N.you_are_public)),k=J(()=>{switch(n.variant){case"all":return ne
+
+====
+
+al.player.bans.ban.staff"),inline:!1},{title:a("modal.player.bans.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),x=J(()=>(c.subscription??[]).filter(N=>N.is_public&&N.you_are_public)),k=J(()=>{switch(n.variant){case"all":return new Xi(async(N,V)=>{const B=await A(N);return{limit:V,page:N,results
+
+====
+
+s.ban.reason"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.term"),inline:!0,noTruncate:!0},{title:a("modal.player.bans.ban.comment"),inline:!0,noTruncate:!0}]),x=J(()=>(c.subscription??[]).filter(N=>N.is_public&&N.you_are_public)),k=J(()=>{switch(n.variant){case"all":return new Xi(async(N,V)=>{const B=await A(N);return{limit:V,page:N,results:B}},50);case"own":return new Xi(async(N,V)=>{const B=await E(N)
+
+====
+
+length??0))};return(N,V)=>N.variant==="other"&&x.value.length==0?(y(),S("div",CTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty-other.title"),subtitle:f(a)("modal.player.bans.empty-other.subtitle")},null,8,["title","subtitle"])])):r.value&&r.value.length==0?(y(),S("div",kTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty.title"),subtitle:f(a)("modal.player.bans.empty.subtitle")},null,8,["title","sub
+
+====
+
+e.length==0?(y(),S("div",CTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty-other.title"),subtitle:f(a)("modal.player.bans.empty-other.subtitle")},null,8,["title","subtitle"])])):r.value&&r.value.length==0?(y(),S("div",kTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty.title"),subtitle:f(a)("modal.player.bans.empty.subtitle")},null,8,["title","subtitle"])])):(y(),S("div",STt,[T(js,{"can-view":r.valu
+
+====
+
+le")},null,8,["title","subtitle"])])):r.value&&r.value.length==0?(y(),S("div",kTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty.title"),subtitle:f(a)("modal.player.bans.empty.subtitle")},null,8,["title","subtitle"])])):(y(),S("div",STt,[T(js,{"can-view":r.value!=null,class:"!bg-transparent"},null,8,["can-view"]),r.value!=null?(y(),S(Q,{key:0},[b("div",ATt,[(y(!0),S(Q,null,Dt(r.value,(B,z)=>(y(),S(Q,{key:B.i
+
+====
+
+r.value.length==0?(y(),S("div",kTt,[T(Xs,{type:"empty",title:f(a)("modal.player.bans.empty.title"),subtitle:f(a)("modal.player.bans.empty.subtitle")},null,8,["title","subtitle"])])):(y(),S("div",STt,[T(js,{"can-view":r.value!=null,class:"!bg-transparent"},null,8,["can-view"]),r.value!=null?(y(),S(Q,{key:0},[b("div",ATt,[(y(!0),S(Q,null,Dt(r.value,(B,z)=>(y(),S(Q,{key:B.id},[B.source==="rustapp_local"?(y(),H(al,{key:0
+
+====
+
+(f(nt).unlock)]),_:1},8,["tooltip-text"]))]}),row1:D(()=>[kt(P(B.reason),1)]),row2:D(()=>[kt(P(B.expired_at?f(a)("modal.player.bans.ban.unban-date",{date:f(o).format(B.expired_at,"DD.MM.YY HH:mm",!0,!0)}):f(a)("modal.player.bans.ban.forever")),1)]),actions:D(()=>[T(Et,{preset:"default-light",class:"!p-1 !rounded",action:()=>B.ban_dto?m(B.ban_dto):void 0},{default:D(()=>[T(f(nt).open,{class:"fill-frey-50 !w-[20px]"})]
+
+====
+
+expired_at?f(a)("modal.player.bans.ban.unban-date",{date:f(o).format(B.expired_at,"DD.MM.YY HH:mm",!0,!0)}):f(a)("modal.player.bans.ban.forever")),1)]),actions:D(()=>[T(Et,{preset:"default-light",class:"!p-1 !rounded",action:()=>B.ban_dto?m(B.ban_dto):void 0},{default:D(()=>[T(f(nt).open,{class:"fill-frey-50 !w-[20px]"})]),_:2},1032,["action"])]),_:2},[B.client_id?{name:"row0",fn:D(()=>[T(Ta,{class:"staff","client-id
+
+====
+
+B.project_name??f(a)("general.unknown")),1)]),row2:D(()=>[kt(P(B.reason),1)]),row3:D(()=>[kt(P(B.expired_at?f(a)("modal.player.bans.ban.unban-date",{date:f(o).format(B.expired_at,"DD.MM.YY HH:mm",!0,!0)}):f(a)("modal.player.bans.ban.forever")),1)]),_:2},[(B.client_id??0)>10?{name:"row1",fn:D(()=>[T(Ta,{class:"staff","client-id":B.client_id},null,8,["client-id"])]),key:"0"}:void 0,B.ban_dto?{name:"actions",fn:D(()=>[T
+
+====
+
+expired_at?f(a)("modal.player.bans.ban.unban-date",{date:f(o).format(B.expired_at,"DD.MM.YY HH:mm",!0,!0)}):f(a)("modal.player.bans.ban.forever")),1)]),_:2},[(B.client_id??0)>10?{name:"row1",fn:D(()=>[T(Ta,{class:"staff","client-id":B.client_id},null,8,["client-id"])]),key:"0"}:void 0,B.ban_dto?{name:"actions",fn:D(()=>[T(Et,{preset:"default-light",class:"!p-1 !rounded",action:()=>B.ban_dto?m(B.ban_dto):void 0},{defa

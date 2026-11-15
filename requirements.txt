@@ -1,0 +1,2 @@
+# Checkapp uses Python 3.10+ standard library only.
+# In cPanel → Setup Python App you can skip pip, or run this file — it installs nothing.

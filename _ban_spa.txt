@@ -1,0 +1,30 @@
+post /ban count 0
+.post("/ban-sync/settings",{is_public:x,share_details:k,share_moders:A}),getSubscriptions:async()=>await s.get("/ban-syn
+.post("/ban-sync/subscriptions",{project_id_original:x,auto_kick:k,auto_kick_regex:A,auto_kick_time_limit:E,send_notific
+ban-create => 19
+BanCreate => 6
+createBan => 0
+finish-ban => 0
+override_broadcast => 9
+steamId => 87
+
+=== override_broadcast ===
+eed`,{params:{time_from:Z,time_to:tt,page:G,limit:25}})).data,getChecks:async(W,G)=>(await s.get(`/players/${W}/checks`,{params:{...G}})).data,getStats:async(W,G,Z)=>(await s.get(`/players/${W}/stats`,{params:{time_from:G,time_to:Z}})).data,ban:async(W,G,Z)=>(await s.put(`/players/${W}/ban`,{bans:G,override_broadcast:Z})).data,commentGet:async W=>(await s.get(`/players/${W}/comments`)).data,commentCreate:async(W,G)=>{await s.post(`/players/${W}/comments`,{text:G})},commentGetById:async(W,G)=>(await s.get(`/players/${W}/comments/${G}`)).data,commentDelete:async(W,G)=>(await s.delete(`/players/${W}/comments/${G}`)).data,getPlayerRccBans:async W=>(await s.get(`/players/${W}/rcc`)).data,playerSettingsAutoKickGet:async W=>(await s.get(`/players/${W}/settings-auto-kick`)).data,playerSettingsAuto
+
+=== ban. component ===
+
+
+=== createBan ===
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = []
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}
+var _U=Object.defineProperty;var wU=(s,t,e)=>t in s?_U(s,t,{enumerable:!0,configurable:!0,writable:!0,value:e}):s[t]=e;var Ls=(s,t,e)=>(wU(s,typeof t!="symbol"?t+"":t,e),e);import{c as Oi,g as Ia,_ as ii,a as xU,A as CU
+
+=== post ban ===
+
+
+=== signage browse ===
+{page:0,net_ids:Array.from(new Set(r)),limit:r.length,hide_destroyed:!1});return r.map(l=>o.results.find(c=>c.net_id===l))},i=async r=>(await s.get("/signage/browse",{params:r})).data;return{batchNetIds:t,findBatchNetIds:e,browse:i,like:async(r,o,l)=>(await s.post("/signage/like",{server_id:r,net_id:o,like:l})).data,deleteOne:async(r,o)=>(await s.delete("/signage",{data:{server_id:r,net_id:o}})).data}},kyt=s=>({getCountries:async()=>(await s.get("/utils/countries")).data,getTariffs:async()=>(await s.get("/utils/tariff")).data}),Syt=s=>({getProj

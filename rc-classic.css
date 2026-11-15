@@ -1,0 +1,79 @@
+/* ================================================================
+   Classic mode — original rustapp.io design for RustCheck.
+   Palette: neutral gray-white #1e1e1e (rustapp.io theme-color).
+
+   index.html sets window.__RC_CLASSIC__ = true, which switches off the
+   custom rc-home / rc-dash / rc-panel-home screens, the rc-app-bg layer
+   and the rc-ui-polish / rc-requested restyle pass. This stylesheet is
+   the safety net: it keeps the real SPA screens visible and pins the
+   page to the rustapp.io palette even if a leftover layer toggles.
+   ================================================================ */
+
+/* 1. Page background — rustapp.io gray, never the custom #050505 black */
+html, body,
+html.checkapp-home, html.checkapp-home body,
+html.rc-home-on, html.rc-home-on body,
+html.rc-dash-on, html.rc-dash-on body,
+html.rc-profile-on, html.rc-profile-on body,
+html.rc-app-bg, html.rc-app-bg body,
+html.checkapp-home-stable, html.checkapp-home-stable body {
+  background: #1e1e1e !important;
+  background-color: #1e1e1e !important;
+  color-scheme: dark;
+}
+
+/* 2. The original app always wins: un-hide #app and the landing page,
+      whatever custom class a leftover script may have added. */
+html.checkapp-home #app,
+html.rc-home-on #app,
+html.rc-dash-on #app,
+html.rc-dash-on .root-router,
+html.rc-dash-on .background,
+html.checkapp-home .landing-page,
+html.rc-home-on .landing-page,
+html.checkapp-home .landing-page .background {
+  display: revert !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+/* Reveal every landing block that the reveal animation would keep at 0. */
+html.checkapp-home:not(.checkapp-home-ready) .landing-page,
+html.checkapp-home.checkapp-home-ready .landing-page,
+html.checkapp-home:not(.checkapp-home-ready) .landing-page > header,
+html.checkapp-home:not(.checkapp-home-ready) .landing-page main > section,
+html.checkapp-home:not(.checkapp-home-ready) .landing-page footer,
+html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page > header,
+html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page main > section,
+html.checkapp-home.checkapp-home-ready:not(.checkapp-home-revealed) .landing-page footer {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+}
+
+/* 3. Replacement screens and background layer stay out of the way. */
+#rc-home,
+#rc-dash,
+#rc-panel-home,
+#rc-app-bg,
+#rc-profile-bg,
+#rc-profile-dismiss {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 4. rustapp.io typography: Inter everywhere the SPA inherits a font. */
+body, button, input, select, textarea {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* 5. Neutral gray-white accents (no RustCheck orange left behind). */
+:root {
+  --rc-accent: #ededed;
+  --rc-accent-hover: #ffffff;
+  --rc-accent-soft: rgba(255, 255, 255, .12);
+}

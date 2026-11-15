@@ -1,0 +1,237 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "test@local.dev",
+      "name": "Tester",
+      "tag": "tester",
+      "password_hash": "f9baec7298be9a9c2397e8b55f2a702b2c806c051e4e551da422596aea84de50",
+      "created_at": 1789405616351,
+      "last_project_id": 1,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg"
+    },
+    {
+      "id": 2,
+      "email": "owner@local.dev",
+      "name": "owner",
+      "tag": "owner",
+      "password_hash": "dbb6ef8c44a68e89a995d281523e1fbf13f3e9b50e2eb4ac328e396dd304f416",
+      "created_at": 1789406088945,
+      "last_project_id": 2,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg"
+    },
+    {
+      "id": 3,
+      "email": "asasjkbdsa@gmail.com",
+      "name": "vovan",
+      "tag": "vovan",
+      "password_hash": "421187f89ae84836a5c3446fca1dfbd02072dfc5316e4efc9bb1a8c5e2b3359c",
+      "created_at": 1789406334433,
+      "last_project_id": 4,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg",
+      "bio": ""
+    },
+    {
+      "id": 4,
+      "email": "sdadasijw@gmail.com",
+      "name": "tested",
+      "tag": "tested",
+      "password_hash": "90a524971319da18274351b4c6ec836b482c3054891fc732f005b86e49f5e76b",
+      "created_at": 1789692091586,
+      "last_project_id": 5,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg"
+    },
+    {
+      "id": 5,
+      "email": "admin@rustapp.local",
+      "name": "Admin",
+      "tag": "admin",
+      "password_hash": "9b7c091caf9fa8a2cf954cc9a3fc9c84c7fac92e25cd8b93a4e63a7324419baa",
+      "created_at": 1790034326766,
+      "last_project_id": 6,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg"
+    },
+    {
+      "id": 6,
+      "email": "admin@local.dev",
+      "name": "admin",
+      "tag": "admin",
+      "password_hash": "1102fb9cc829e8ea20c0d80253255c22079eecea1d2c6073cb61568d9b32b4ce",
+      "created_at": 1790034384693,
+      "last_project_id": 7,
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "My Rust",
+      "domain": "myrust",
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg",
+      "contact_url": "",
+      "plan": "base",
+      "owner_user_id": 1,
+      "created_at": 1789405623073,
+      "trial_ends_at": 1790010423073
+    },
+    {
+      "id": 2,
+      "name": "My Server",
+      "domain": "myserver",
+      "avatar": "avatar-project/1695419722879-43ad94311081cd8185649d49.jpg",
+      "contact_url": "none.url",
+      "plan": "base",
+      "owner_user_id": 2,
+      "created_at": 1789406109192,
+      "trial_ends_at": 1790010909192
+    },
+    {
+      "id": 3,
+      "name": "fsdfsdfsdf",
+      "domain": "fsdfsdfsdf",
+      "avatar": "avatar-project/1695419722879-43ad94311081cd8185649d49.jpg",
+      "contact_url": "none.url",
+      "plan": "base",
+      "owner_user_id": 3,
+      "created_at": 1789406337406,
+      "trial_ends_at": 1790011137406
+    },
+    {
+      "id": 4,
+      "name": "фывыфв",
+      "domain": "sdsadad",
+      "avatar": "avatar-project/1695419722879-43ad94311081cd8185649d49.jpg",
+      "contact_url": "none.url",
+      "plan": "base",
+      "owner_user_id": 3,
+      "created_at": 1789692043385,
+      "trial_ends_at": 1790296843385
+    },
+    {
+      "id": 5,
+      "name": "tested",
+      "domain": "tested",
+      "avatar": "avatar-project/1695419722879-43ad94311081cd8185649d49.jpg",
+      "contact_url": "none.url",
+      "plan": "base",
+      "owner_user_id": 4,
+      "created_at": 1789692181311,
+      "trial_ends_at": 1790296981311
+    },
+    {
+      "id": 6,
+      "name": "My Rust Server",
+      "domain": "myrustserver",
+      "avatar": "https://s3.rustapp.io/assets/default-avatar.jpeg",
+      "contact_url": "",
+      "plan": "base",
+      "owner_user_id": 5,
+      "created_at": 1790034326780,
+      "trial_ends_at": 1790639126780
+    },
+    {
+      "id": 7,
+      "name": "cgvdfd",
+      "domain": "cgvdfd",
+      "avatar": "avatar-project/1695419722879-43ad94311081cd8185649d49.jpg",
+      "contact_url": "none.url",
+      "plan": "base",
+      "owner_user_id": 6,
+      "created_at": 1790034387981,
+      "trial_ends_at": 1790639187981
+    }
+  ],
+  "seq_user": 7,
+  "seq_project": 8,
+  "paired_servers": [
+    {
+      "id": 1,
+      "code": "",
+      "token": "local-token-undefined",
+      "created_at": 1790034168623,
+      "info": {
+        "name": "Browser",
+        "hostname": "Browser",
+        "level": "Barren",
+        "level_url": "",
+        "level_image_url": "",
+        "description": "MAIN ",
+        "branch": "",
+        "avatar_big": "",
+        "avatar_url": "",
+        "banner_url": "https://i.imgur.com/aryELXh.png",
+        "online": 0,
+        "slots": 100,
+        "reserved": 0,
+        "version": "2.2.0",
+        "protocol": "2388.237.1",
+        "performance": "0.0658630999999998",
+        "port": 28015,
+        "connected": true,
+        "world_size": 4500,
+        "size": 4500,
+        "seed": 1337,
+        "server_ip": "144.31.127.242",
+        "ip": "144.31.127.242",
+        "public_ip": "144.31.127.242"
+      },
+      "players": [],
+      "online": 0,
+      "connected": true,
+      "last_seen_at": 1790037585248,
+      "disconnected": {},
+      "team_changes": {},
+      "map": {
+        "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4e",
+        "image_url": "",
+        "level": "Barren",
+        "world_size": 4500,
+        "seed": 1337
+      }
+    },
+    {
+      "id": 2,
+      "code": "undefined",
+      "token": "local-token-undefined",
+      "created_at": 1790034365820,
+      "info": {
+        "code": "undefined",
+        "name": "Browser",
+        "hostname": "Browser",
+        "level": "Barren",
+        "level_url": "",
+        "level_image_url": "",
+        "description": "MAIN ",
+        "branch": "",
+        "avatar_big": "",
+        "avatar_url": "",
+        "banner_url": "https://i.imgur.com/aryELXh.png",
+        "online": 1,
+        "slots": 100,
+        "reserved": 0,
+        "version": "2.2.0",
+        "protocol": "2388.237.1",
+        "performance": "0.973590300000031",
+        "port": 28015,
+        "connected": true,
+        "world_size": 4500,
+        "size": 4500,
+        "seed": 1337,
+        "server_ip": "144.31.127.242",
+        "ip": "144.31.127.242",
+        "public_ip": "144.31.127.242"
+      },
+      "players": [],
+      "online": 0,
+      "connected": true,
+      "last_seen_at": 1790037568232,
+      "map": {
+        "image_base64": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4e",
+        "image_url": "",
+        "level": "Barren",
+        "world_size": 4500,
+        "seed": 1337
+      }
+    }
+  ]
+}

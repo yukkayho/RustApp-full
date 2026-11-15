@@ -1,0 +1,15 @@
+.env
+*.db
+*.db-wal
+*.db-shm
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+__pycache__/
+*.pyc
+.cursor/
+tmp/
+*.bak
+*.log
+.DS_Store
+Thumbs.db
